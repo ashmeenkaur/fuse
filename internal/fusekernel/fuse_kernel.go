@@ -233,6 +233,7 @@ const (
 	OpenKeepCache   OpenResponseFlags = 1 << 1 // don't invalidate the data cache on open
 	OpenNonSeekable OpenResponseFlags = 1 << 2 // mark the file as non-seekable (not supported on OS X)
 	OpenCacheDir    OpenResponseFlags = 1 << 3 // allow caching this directory
+	OpenPassthrough OpenResponseFlags = 1 << 7 // Linux passthrough mode
 
 	OpenPurgeAttr OpenResponseFlags = 1 << 30 // OS X
 	OpenPurgeUBC  OpenResponseFlags = 1 << 31 // OS X
@@ -277,11 +278,15 @@ const (
 	InitMaxPages         InitFlags = 1 << 22
 	InitCacheSymlinks    InitFlags = 1 << 23
 	InitNoOpendirSupport InitFlags = 1 << 24
+	InitExt              InitFlags = 1 << 30
 
 	InitCaseSensitive InitFlags = 1 << 29 // OS X only
 	InitVolRename     InitFlags = 1 << 30 // OS X only
 	InitXtimes        InitFlags = 1 << 31 // OS X only
 )
+
+const InitDirectIOAllowMMAP uint64 = 1 << 36
+const InitFusePassthrough uint64 = 1 << 37
 
 type flagName struct {
 	bit  uint32
@@ -314,6 +319,7 @@ var initFlagNames = []flagName{
 	{uint32(InitCaseSensitive), "InitCaseSensitive"},
 	{uint32(InitVolRename), "InitVolRename"},
 	{uint32(InitXtimes), "InitXtimes"},
+	{uint32(InitExt), "InitExt"},
 }
 
 func (fl InitFlags) String() string {
@@ -753,7 +759,9 @@ type InitOut struct {
 	TimeGran            uint32
 	MaxPages            uint16
 	MapAlignment        uint16
-	Unused              [8]uint32
+	Flags2              uint32
+	MaxDepthStack       uint32
+	Unused              [6]uint32
 }
 
 type InterruptIn struct {
