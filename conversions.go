@@ -896,10 +896,13 @@ func (c *Connection) kernelResponseForOp(
 
 		out.OpenFlags |= uint32(fusekernel.OpenPassthrough)
 		out.OpenFlags &= ^uint32(fusekernel.OpenKeepCache)
+
 		fd, errt := c.RegisterBackingFd(&o.BackingMap)
-		c.debugLogger.Printf("OpenFileOp: %v, Handle: %d, BackingMap: %v",
+		c.debugLogger.Printf("OpenFileOp: Inode: %v, Handle: %d, BackingMap: %v",
 			o.Inode, o.Handle, o.BackingMap)
 		c.debugLogger.Printf("OpenFileOp, Fd: %d, output: %v", fd, errt)
+		out.BackingId = uint32(fd)
+		c.debugLogger.Printf("OpenFileOp Out: %v", out)
 
 	case *fuseops.ReadFileOp:
 		if o.Dst != nil {

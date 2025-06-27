@@ -555,7 +555,7 @@ type OpenIn struct {
 type OpenOut struct {
 	Fh        uint64
 	OpenFlags uint32
-	Padding   uint32
+	BackingId uint32
 }
 
 type CreateIn struct {
