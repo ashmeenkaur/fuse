@@ -895,7 +895,7 @@ func (c *Connection) kernelResponseForOp(
 		}
 
 		out.OpenFlags |= uint32(fusekernel.OpenPassthrough)
-		out.OpenFlags &= ^uint32(fusekernel.OpenKeepCache)
+		out.OpenFlags |= uint32(fusekernel.OpenKeepCache)
 
 		fd, errt := c.RegisterBackingFd(&o.BackingMap)
 		c.debugLogger.Printf("OpenFileOp: Inode: %v, Handle: %d, BackingMap: %v",
